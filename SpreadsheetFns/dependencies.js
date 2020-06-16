@@ -1,4 +1,3 @@
-/*exported compareOneToManyNames*/
 function splitNormalizeAndRemoveUselessParts(name) {
   const prepositions = ['de', 'da', 'e', 'das', 'dos', 'do'];
 
@@ -51,6 +50,7 @@ function matchSurnames(surnames1, surnames2, requiredSimilarity = 0.8) {
   return surnameMatches;
 }
 
+/* exported compareOneToManyNames */
 function compareOneToManyNames(name1, namesList, requiredSimilarity = 0.9, matchesPerMismatch = 2) {
   const name1NormalizedList = splitNormalizeAndRemoveUselessParts(name1);
   const [firstname1, ...surnames1] = name1NormalizedList;
@@ -80,6 +80,7 @@ function compareOneToManyNames(name1, namesList, requiredSimilarity = 0.9, match
   return nameMatches;
 }
 
+/* exported compareNames */
 function compareNames(name1, name2, requiredSimilarity = 0.9, matchesPerMismatch = 2) {
   const name1NormalizedList = splitNormalizeAndRemoveUselessParts(name1);
   const name2NormalizedList = splitNormalizeAndRemoveUselessParts(name2);

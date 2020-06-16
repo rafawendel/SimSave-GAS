@@ -34,7 +34,7 @@ module.exports = {
     "no-unused-vars": ['warn', {
       'vars': 'local',
       'argsIgnorePattern': '^_',
-      'varsIgnorePattern': '^[A-Z0-9_]*$'
+      /* 'varsIgnorePattern': '^[A-Z0-9_]*$' */
     }]
   },
   globals: {
