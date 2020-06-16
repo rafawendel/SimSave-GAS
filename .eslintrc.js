@@ -2,9 +2,10 @@ module.exports = {
   env: {
     es6: true,
     node: true,
+    'googleappsscript/googleappsscript': true
   },
   extends: [
-    'airbnb-base', 'eslint:recommended', 'plugin:prettier/recommended'
+    /* 'airbnb-base',  */'eslint:recommended', 'plugin:prettier/recommended'
   ],
   globals: {
     Atomics: 'readonly',
@@ -15,9 +16,6 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 2018
-  },
-  env: {
-    'googleappsscript/googleappsscript': true
   },
   rules: {
     'prettier/prettier': 'error',
@@ -31,7 +29,10 @@ module.exports = {
     'no-unused-expressions': 'warn',
     'no-param-reassign': 'warn',
     'prefer-destructuring': 'warn',
-    'no-console': 'off'
+    'no-console': 'off',
+    'camelcase': 'off',
+    'no-throw-literal': 'off',
+    "no-unused-vars": ['warn', { 'vars': 'local' }]
   },
   "globals": {
     "OAuth1": true,
