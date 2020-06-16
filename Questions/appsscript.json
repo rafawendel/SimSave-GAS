@@ -1,6 +1,12 @@
 {
   "timeZone": "America/Sao_Paulo",
   "dependencies": {
+    "libraries": [{
+      "userSymbol": "SimSave",
+      "libraryId": "1XASyFt1Ha7CtN0RJ3mR29zx4n8nLXRrBqhPvbLxvY57gATs4f6FQK_Gj",
+      "version": "19",
+      "developmentMode": true
+    }]
   },
   "exceptionLogging": "STACKDRIVER",
   "runtimeVersion": "V8"

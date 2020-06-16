@@ -1,7 +1,7 @@
 function onOpen(_e) {
   
   SpreadsheetApp.getUi()
-    .createMenu('Funções Especiais')
+    .createMenu('SimSave')
     .addItem('Atualizar aulas', 'updateSpreadsheetFromSimSave')
     .addItem('Gerar documento', 'generateDocumentFromSpreadsheet')
     .addItem('Postar Questões', 'postQuestionsToSimSaveFromSpreadsheet')

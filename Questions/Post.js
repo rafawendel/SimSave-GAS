@@ -86,18 +86,21 @@ async function postQuestionsToSimSaveFromSpreadsheet() {
     const { newQuestionsObjList, editedQuestionsObjList } = separateNewAndEditedQuestions(filteredQuestionsObjArr);
     const { responses: postResponses, errors: postErrors } = await SimSave.post('question', newQuestionsObjList);
     const { responses: editResponses, errors: editErrors } = await SimSave.edit('question', editedQuestionsObjList);
+    console.log(await SimSave.edit('question', editedQuestionsObjList))
 
-    const idList = postResponses.map(item => item.id || null);
+    const idList = postResponses.map(item => item.id || null);    
     const successfulPostList = postResponses.map(item => !!item);
     
     editColumnByHeaderName('ID', idList);
     editColumnByHeaderName('Sys?', successfulPostList);
-  
-    if (postErrors.length > 0 || editErrors.length > 0) throw new Error(`Post: ${JSON.stringify(postErrors)} \nEdit: ${JSON.stringify(editErrors)}`);
+    
+    if (postErrors.length > 0 && postErrors[0] !== 'Empty data') throw new Error(`Postagem: ${JSON.stringify(postErrors)}`);
+    if (editErrors.length > 0 && editErrors[0] !== 'Empty data') throw new Error(`Edição: ${JSON.stringify(postErrors)}`);
+    
     SpreadsheetApp.getUi().alert('Perguntas postadas com sucesso');
   } catch(err) {
     console.log(err);
-    SpreadsheetApp.getUi().alert(`Erros:\n${err}`);
+    SpreadsheetApp.getUi().alert(`Erros:\n${JSON.stringify(err.error ? (err.error.message || err.error) : (err.message || err))}`);
   }
 }
 

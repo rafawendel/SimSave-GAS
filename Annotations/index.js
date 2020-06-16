@@ -1,10 +1,12 @@
 function getAnnotations(presentation) {
   const slides = presentation.getSlides();
-  return slides.map(slide => slide
-    .getNotesPage()
-    .getSpeakerNotesShape()
-    .getText()
-    .asString()
+  return slides.map(
+    slide =>
+      slide
+        .getNotesPage()
+        .getSpeakerNotesShape()
+        .getText()
+        .asString()
     //.replace(/\n/g, '')
   );
 }
@@ -24,7 +26,7 @@ function appendAnnotationsToDoc(annotationsList, documentBody) {
   } catch (err) {
     documentErrors.push(err);
   }
-  
+
   return documentErrors;
 }
 
@@ -36,7 +38,7 @@ function createDocument(title, trashOldCopies = true) {
 
   if (trashOldCopies) {
     const oldFiles = folder.getFilesByName(fileName);
-      while (oldFiles.hasNext()) {
+    while (oldFiles.hasNext()) {
       oldFiles.next().setTrashed(true);
     }
   }
@@ -44,28 +46,30 @@ function createDocument(title, trashOldCopies = true) {
   const targetFile = DriveApp.getFileById(TEMPLATE_ID).makeCopy(fileName, folder);
   const document = DocumentApp.openById(targetFile.getId());
   const body = document.getBody();
-  
+
   const header = body.insertParagraph(0, `${title}\n`);
   header.setHeading(DocumentApp.ParagraphHeading.HEADING1);
   header.setAttributes({
     [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER
   });
-  
+
   return { documentUrl: targetFile.getUrl(), documentBody: body, document };
 }
 
 function createDocFromAnnotations() {
   const presentation = SlidesApp.getActivePresentation();
   const annotationsList = getAnnotations(presentation);
-  
+
   const { documentUrl, documentBody, document } = createDocument(presentation.getName());
 
   const errors = appendAnnotationsToDoc(annotationsList, documentBody);
 
   document.saveAndClose();
-  
+
   console.log(documentUrl);
-  SlidesApp.getUi().alert(`${documentUrl}\n${errors.length > 0 ? 'Erros:\n' + errors.map(e => e.message + '\n') : ''}`).OK;
+  SlidesApp.getUi().alert(
+    `${documentUrl}\n${errors.length > 0 ? 'Erros:\n' + errors.map(e => e.message + '\n') : ''}`
+  ).OK;
 }
 
 function addMenu() {
