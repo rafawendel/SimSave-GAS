@@ -1,0 +1,38 @@
+{
+  "name": "simsave-gas",
+  "author": {
+    "name": "Rafael Wendel Carvalho Cruz",
+    "email": "rafawendel2010@gmail.com",
+    "url": "https://rafawendel.github.io/"
+  },
+  "homepage": "http://gedaam.org",
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {
+    "fetch": "npx clasp pull",
+    "deploy": "npx clasp push",
+    "execute": "npx clasp run",
+    "test": "npm run deploy && npm run execute"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+"
+  },
+  "keywords": [
+    "google-apps-script",
+    "gsuite",
+    "apps-script"
+  ],
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "@types/google-apps-script": "^1.0.11",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-googleappsscript": "^1.0.3",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  }
+}
