@@ -1,3 +1,4 @@
+/*exported compareOneToManyNames*/
 function splitNormalizeAndRemoveUselessParts(name) {
   const prepositions = ['de', 'da', 'e', 'das', 'dos', 'do'];
 
@@ -89,7 +90,7 @@ function compareNames(name1, name2, requiredSimilarity = 0.9, matchesPerMismatch
   if (Math.min(surnames1.length, surnames2.length) === 0) {
     return similarityOfFirstName >= 1;
   }
-  if (similarityOfFirstname < requiredSimilarity) return false;
+  if (similarityOfFirstName < requiredSimilarity) return false;
 
   const surnameMatchCount = matchSurnames(surnames1, surnames2, requiredSimilarity);
   const minimumSurnameMatches =

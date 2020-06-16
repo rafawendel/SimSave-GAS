@@ -1,11 +1,10 @@
 module.exports = {
   env: {
     es6: true,
-    node: true,
     'googleappsscript/googleappsscript': true
   },
   extends: [
-    /* 'airbnb-base',  */'eslint:recommended', 'plugin:prettier/recommended'
+    'eslint:recommended', 'plugin:prettier/recommended'
   ],
   globals: {
     Atomics: 'readonly',
@@ -15,7 +14,7 @@ module.exports = {
     'prettier', 'googleappsscript'
   ],
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2019
   },
   rules: {
     'prettier/prettier': 'error',
@@ -32,11 +31,15 @@ module.exports = {
     'no-console': 'off',
     'camelcase': 'off',
     'no-throw-literal': 'off',
-    "no-unused-vars": ['warn', { 'vars': 'local' }]
+    "no-unused-vars": ['warn', {
+      'vars': 'local',
+      'argsIgnorePattern': '^_',
+      'varsIgnorePattern': '^[A-Z0-9_]*$'
+    }]
   },
-  "globals": {
-    "OAuth1": true,
-    "OAuth2": true,
-    "FirebaseApp": true
+  globals: {
+    'OAuth1': true,
+    'OAuth2': true,
+    'FirebaseApp': true
   }
 };
