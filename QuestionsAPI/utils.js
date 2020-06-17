@@ -1,7 +1,7 @@
 // Utils
-function parseContentListAsObject(idList, type) {
+function parseContentListAsObject_(idList, type) {
   if (idList === '') return {};
-  return parseStringAsArray(idList)
+  return parseStringAsArray_(idList)
     .map(id => (typeof id === 'string' ? +id.trim() : id))
     .reduce(
       (obj, id) => ({
@@ -12,7 +12,7 @@ function parseContentListAsObject(idList, type) {
     );
 }
 
-function clearEmptyFields(objArr, keyList) {
+function clearEmptyFields_(objArr, keyList) {
   return objArr.filter(obj => {
     for (let key in obj) {
       if (!keyList.includes(key)) continue;
@@ -21,7 +21,7 @@ function clearEmptyFields(objArr, keyList) {
     return true;
   });
 }
-function parseStringAsArray(str) {
+function parseStringAsArray_(str) {
   return str === null || str === undefined
     ? []
     : str instanceof Array
@@ -33,11 +33,11 @@ function parseStringAsArray(str) {
     : [str];
 }
 
-function parseIdListAsArray(idList = '') {
-  return parseStringAsArray(idList).map(i => +i.trim());
+function parseIdListAsArray_(idList = '') {
+  return parseStringAsArray_(idList).map(i => +i.trim());
 }
 
-function convertArrayToObject(array, key) {
+function convert2DArrayToObject_(array, key) {
   return array.reduce(
     (obj, item) => ({
       ...obj,
@@ -47,24 +47,16 @@ function convertArrayToObject(array, key) {
   );
 }
 
-function paragraphize(string) {
+function paragraphize_(string) {
   return `<p>${string}</p>`;
 }
 
-function removeHTMLTags(text) {
+function removeHTMLTags_(text) {
   return text.replace(/<[^>]*>/g, '');
 }
 
-// future implementation
-function splitArrays() {
-  array.reduce((shit, arrays) => (f(shit) ? arrays[0].append(shit) : arrays[1].append(shit)), [
-    [],
-    []
-  ]);
-}
-
 // Spreadsheet
-function addToSpreadsheet(
+function addToSpreadsheet_(
   matrix,
   sheetName,
   clear = false,
@@ -80,7 +72,7 @@ function addToSpreadsheet(
   SpreadsheetApp.flush();
 }
 
-function getColumnByHeaderName(
+function getColumnByHeaderName_(
   headerName,
   sheetName,
   headerStart = [1, 1],
@@ -88,7 +80,7 @@ function getColumnByHeaderName(
 ) {
   const sheet = sheetName ? ss.getSheetByName(sheetName) : ss.getActiveSheet();
   const lastRow = sheet.getDataRange().getLastRow();
-  const headers = sheet.getRange(...headerStart, 1, lastRow).getValues()[0];
+  const [headers] = sheet.getRange(...headerStart, 1, lastRow).getValues();
 
   const indexOfHeader = headers.indexOf(headerName);
   if (indexOfHeader < 0) throw 'Not found';
@@ -102,7 +94,7 @@ function getColumnByHeaderName(
 }
 
 // @param {array} range = [row, column, numRows, numColumns] OR [row, column, numColumns] OR [row, column]
-function parseSpreadsheetAsObject(
+function parseSpreadsheetAsObject_(
   range = [1, 1, 1, 1],
   sheetName,
   ss = SpreadsheetApp.getActiveSpreadsheet()
@@ -110,7 +102,9 @@ function parseSpreadsheetAsObject(
   const sheet = sheetName ? ss.getSheetByName(sheetName) : ss.getActiveSheet();
 
   if (range.length === 2)
+    // eslint-disable-next-line no-param-reassign
     range = [...range, sheet.getDataRange().getLastRow(), sheet.getDataRange().getLastColumn()];
+  // eslint-disable-next-line no-param-reassign
   if (range.length === 3) range = [range[0], range[1], sheet.getDataRange().getLastRow(), range[2]];
   const [header, ...data] = sheet.getRange(...range).getValues();
 
@@ -127,7 +121,7 @@ function parseSpreadsheetAsObject(
   return dataObjList;
 }
 
-function saveColumnToSpreadsheet(
+function saveColumnToSpreadsheet_(
   col,
   data,
   sheetName,

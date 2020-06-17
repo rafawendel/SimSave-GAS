@@ -1,14 +1,10 @@
+/* global QuestionsAPI */
+
 function onOpen(_e) {
-  
   SpreadsheetApp.getUi()
     .createMenu('SimSave')
-    .addItem('Atualizar aulas', 'updateSpreadsheetFromSimSave')
-    .addItem('Gerar documento', 'generateDocumentFromSpreadsheet')
-    .addItem('Postar Questões', 'postQuestionsToSimSaveFromSpreadsheet')
+    .addItem('Atualizar aulas', 'QuestionsAPI.updateSpreadsheetFromSimSave')
+    .addItem('Gerar documento', 'QuestionsAPI.generateDocumentFromSpreadsheet')
+    .addItem('Postar Questões', 'QuestionsAPI.postQuestionsToSimSaveFromSpreadsheet')
     .addToUi();
-
-}
-
-function initialize() {
-  fetchContactsAndAddToSpreadsheet()
 }
