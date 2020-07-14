@@ -5,13 +5,13 @@ function interpretData(classList, durationList, contentList, journeysList) {
     indexedDurationObject[durationObj.id] = durationObj['Tempo Total (minutos)'];
   });
 
-  const indexedPlaylistsObject = {};
-  contentList.forEach(classObj => {
-    indexedPlaylistsObject[classObj.id] = classObj.playlists.reduce(
-      (acc, cur) => `${acc}${cur.name},`,
-      ''
-    );
-  });
+//  const indexedPlaylistsObject = {};
+//  contentList.forEach(classObj => {
+//    indexedPlaylistsObject[classObj.id] = classObj.playlists.reduce(
+//      (acc, cur) => `${acc}${cur.name},`,
+//      ''
+//    );
+//  });
 
   const indexedJourneysObject = {};
   journeysList.forEach(journeyObj => {
@@ -26,11 +26,11 @@ function interpretData(classList, durationList, contentList, journeysList) {
 
   return (
     classList
-      // .filter(classObj => classObj.Medicina === 'Sim')
+//      .filter(classObj => classObj.Medicina === 'Sim')
       .map(classObj => {
         classObj.Curso = classObj.Medicina === 'Sim' ? 'Medicina' : 'Enfermagem';
         classObj['Duração'] = indexedDurationObject[classObj.ID] || '';
-        classObj.Playlists = indexedPlaylistsObject[classObj.ID] || '';
+//        classObj.Playlists = indexedPlaylistsObject[classObj.ID] || '';
         classObj.Journeys = indexedJourneysObject[classObj.ID] || '';
 
         return Object.keys(classObj)
@@ -58,7 +58,7 @@ function addToSpreadsheet(header, data) {
   headRange.setValues(header);
 
   if (header[0].length !== data[0].length) {
-    SpreadsheetApp.getUi().alert('Erro: Verificar número de constiáveis!');
+    SpreadsheetApp.getUi().alert('Erro: Verificar número de variáveis!');
   }
 
   dataRange.setValues(data);
@@ -70,6 +70,7 @@ async function updateSpreadsheetFromSimSave() {
   const { data: responseDuration } = await SimSave.get('report/contents_videos_duration');
   const { data: responseContent } = await SimSave.get('content');
   const { responses: responseJourneys } = await SimSave.getAll('journey', false);
+  console.log(responseContent)
   const header = [
     [
       'ID',
@@ -83,7 +84,7 @@ async function updateSpreadsheetFromSimSave() {
       'Publicado',
       'Curso',
       'Duração',
-      'Playlist',
+//      'Playlist',
       'Jornada'
     ]
   ];

@@ -1,7 +1,6 @@
-/* global Config SimSave separateNewAndEditedQuestions_ parseSpreadsheetAsObject_ clearEmptyFields_ editColumnByHeaderName_*/
+/* global SimSave separateNewAndEditedQuestions_ parseSpreadsheetAsObject_ clearEmptyFields_ editColumnByHeaderName_*/
 /// <reference path="./utils.js" />
 /// <reference path="./dependencies.js" />
-/// <reference path="./enums.js" />
 /// <reference path="../SimSave/SimSave.js" />
 
 /**
@@ -39,19 +38,4 @@ async function postQuestionsToSimSaveFromSpreadsheet() {
       `Erros:\n${JSON.stringify(err.error ? err.error.message || err.error : err.message || err)}`
     );
   }
-}
-
-function clearAllQuestions_() {
-  SimSave.deleteAllEntries('question');
-}
-
-/**
- * Clears all questions with ids in between the beginning and the beginning + length
- *
- * @param {number} start - The index from which to begin'
- * @param {number} length - The number of ids until to delete from the start
- */
-function clearQuestionsWithIdBetween(start, length) {
-  const range = [...Array(length).keys()].map(i => i + start);
-  SimSave.deleteBetween('question', range);
 }

@@ -1,5 +1,6 @@
 /* global removeHTMLTags_ clearEmptyFields_ parseSpreadsheetAsObject_ */
 /// <reference path="./utils.js" />
+
 function formatQuestions_(questionsObjArr) {
   return questionsObjArr.map(questionObj => {
     const alternatives = ['A', 'B', 'C', 'D', 'E'];
@@ -80,7 +81,7 @@ function appendQuestions_(questionsObjList, documentBody, nestingLevel = 0) {
 }
 
 function createDocument_(title, trashOldCopies = true) {
-  const TEMPLATE_ID = '1Ln0N1GFDjbyIIZZRqgmKDD8My0xHuthNvevyQjxI_LI';
+  const TEMPLATE_ID = PropertiesService.getScriptProperties().getProperty('TEMPLATE_ID');
   const fileName = `Questões de ${title}`;
 
   if (trashOldCopies) {

@@ -1,4 +1,17 @@
-/* global OnSystem Reviewed parseContentListAsObject_ paragraphize_ getColumnByHeaderName_ saveColumnToSpreadsheet_ */
+/* global parseContentListAsObject_ paragraphize_ getColumnByHeaderName_ saveColumnToSpreadsheet_ */
+
+const Reviewed = {
+  IGNORE: 'IGNORE',
+  ONLY: 'ONLY',
+  EXCEPT: 'EXCEPT'
+};
+
+const OnSystem = {
+  IGNORE: 'IGNORE',
+  ONLY: 'ONLY',
+  EXCEPT: 'EXCEPT'
+};
+
 function createQuestionsObj_(questionsObjArr, onSystem, reviewed) {
   const questionsObjList = questionsObjArr
     .filter(

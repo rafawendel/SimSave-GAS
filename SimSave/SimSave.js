@@ -1,18 +1,23 @@
-/* global Config stringifyQuery fetchUrl */
+/// <reference path="./_config.js" />
 /// <reference path="./dependencies.js" />
-const params = {
-  method: 'get',
-  contentType: 'application/json',
-  headers: {
-    Authorization: `Bearer ${Config.AUTH_KEY}`,
-    'Content-type': 'application/json'
-  }
-};
+/* global fetchUrl stringifyQuery */
 
-Object.defineProperty(this, 'params', { enumerable: false, writable: false });
+function getParams_() {
+  const params = {
+    method: 'get',
+    contentType: 'application/json',
+    headers: {
+      Authorization: `Bearer ${PropertiesService.getScriptProperties().getProperty('AUTH_KEY')}`,
+      'Content-type': 'application/json'
+    }
+  };
+
+  return params;
+}
 
 async function get(subpage, admin = true) {
   const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, role: 'instructor' };
+  const params = getParams_();
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/${
     admin ? 'admin/' : ''
   }${subpage}${stringifyQuery(queryParams)}`;
@@ -23,6 +28,7 @@ async function get(subpage, admin = true) {
 async function getAll(subpage, admin = true) {
   const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, role: 'instructor' };
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/${admin ? 'admin/' : ''}${subpage}`;
+  const params = getParams_();
 
   const { data } = await fetchUrl(`${sourceUrl}${stringifyQuery(queryParams)}`, { ...params });
 
@@ -40,6 +46,7 @@ async function getAll(subpage, admin = true) {
 
 async function post(subpage, data) {
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/admin/${subpage}`;
+  const params = getParams_();
 
   if (!data || data.length === 0) return { responses: [], errors: ['Empty data'] };
   // eslint-disable-next-line no-param-reassign
@@ -59,6 +66,7 @@ async function post(subpage, data) {
 
 async function edit(subpage, newData) {
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/admin/${subpage}`;
+  const params = getParams_();
 
   if (!newData || newData.length === 0) return { responses: [], errors: ['Empty data'] };
   // eslint-disable-next-line no-param-reassign
@@ -80,19 +88,20 @@ async function edit(subpage, newData) {
   return { responses, errors: networkErrors };
 }
 
-async function deleteAllEntries(subpage) {
+async function deleteAllEntries_(subpage) {
   const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, role: 'instructor' };
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/admin/${subpage}${stringifyQuery(
     queryParams
   )}`;
+  const params = getParams_();
 
   const { data } = await fetchUrl(sourceUrl, { ...params });
 
   const response = await Promise.all(
     data.forEach(datum => {
       fetchUrl(`https://api-ssl.simsave.com.br/v1/admin/${subpage}/${datum.id}`, {
-        method: 'delete',
-        headers: { Authorization: `Bearer ${Config.AUTH_KEY}` }
+        ...params,
+        method: 'delete'
       });
     })
   );
@@ -100,7 +109,8 @@ async function deleteAllEntries(subpage) {
   return response;
 }
 
-async function deleteBetween(subpage, range) {
+async function deleteBetween_(subpage, range) {
+  const Config = PropertiesService.getScriptProperties().getProperties();
   const response = await Promise.all(
     range.forEach(id => {
       fetchUrl(`https://api-ssl.simsave.com.br/v1/admin/${subpage}/${id}`, {

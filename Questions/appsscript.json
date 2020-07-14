@@ -1,0 +1,13 @@
+{
+  "timeZone": "America/Sao_Paulo",
+  "dependencies": {
+    "libraries": [{
+      "userSymbol": "QuestionsAPI",
+      "libraryId": "1tDTJBWcETqn206e-pSxfkr6aAg8lEPWwUK1TKIGagIep9shX4Qc2LCGO",
+      "version": "2",
+      "developmentMode": true
+    }]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8"
+}
