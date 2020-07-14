@@ -1,99 +1,51 @@
-/* global SimSave */
-function interpretData(classList, durationList, contentList, journeysList) {
-  const indexedDurationObject = {};
-  durationList.forEach(durationObj => {
-    indexedDurationObject[durationObj.id] = durationObj['Tempo Total (minutos)'];
-  });
-
-//  const indexedPlaylistsObject = {};
-//  contentList.forEach(classObj => {
-//    indexedPlaylistsObject[classObj.id] = classObj.playlists.reduce(
-//      (acc, cur) => `${acc}${cur.name},`,
-//      ''
-//    );
-//  });
-
-  const indexedJourneysObject = {};
-  journeysList.forEach(journeyObj => {
-    const currentJourney = journeyObj.name;
-    journeyObj.titles.forEach(journeyItem => {
-      journeyItem.steps.forEach(journeyStep => {
-        if (journeyStep.type !== 'content') return;
-        indexedJourneysObject[journeyStep.content_id] = currentJourney;
-      });
-    });
-  });
-
-  return (
-    classList
-//      .filter(classObj => classObj.Medicina === 'Sim')
-      .map(classObj => {
-        classObj.Curso = classObj.Medicina === 'Sim' ? 'Medicina' : 'Enfermagem';
-        classObj['Duração'] = indexedDurationObject[classObj.ID] || '';
-//        classObj.Playlists = indexedPlaylistsObject[classObj.ID] || '';
-        classObj.Journeys = indexedJourneysObject[classObj.ID] || '';
-
-        return Object.keys(classObj)
-          .filter(
-            key =>
-              key !== 'Pir\u00e2mide' &&
-              key !== 'Medicina' &&
-              key !== 'Enfermagem' &&
-              key !== 'T\u00e9c. Enfermagem'
-          )
-          .map(key => [classObj[key]]);
-      })
+/* global SimSave toHHMMSS addToSpreadsheet arraySplitter */
+/// <reference path="./utils.js">
+function interpretData(contentList, reference) {
+  return contentList.map(content =>
+    reference.map(ref => {
+      const [prop, cb] = ref;
+      const val = cb ? cb(content[prop]) : content[prop];
+      return Array.isArray(val) ? val.join(', ') : val;
+    })
   );
-}
-
-function addToSpreadsheet(header, data) {
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Imports') ||
-    SpreadsheetApp.getActiveSpreadsheet().insertSheet('Imports');
-  ss.getRange(1, 1, ss.getDataRange().getLastRow(), ss.getDataRange().getLastColumn()).clear();
-
-  const headRange = ss.getRange(1, 1, 1, header[0].length);
-  const dataRange = ss.getRange(2, 1, data.length, data[0].length);
-
-  headRange.setValues(header);
-
-  if (header[0].length !== data[0].length) {
-    SpreadsheetApp.getUi().alert('Erro: Verificar número de variáveis!');
-  }
-
-  dataRange.setValues(data);
-  SpreadsheetApp.flush();
 }
 
 async function updateSpreadsheetFromSimSave() {
-  const { data: responseMain } = await SimSave.get('report/content_infos');
-  const { data: responseDuration } = await SimSave.get('report/contents_videos_duration');
-  const { data: responseContent } = await SimSave.get('content');
-  const { responses: responseJourneys } = await SimSave.getAll('journey', false);
-  console.log(responseContent)
-  const header = [
+  const { data } = await SimSave.get('content');
+
+  const propMapper = property => list => list.map(item => item[property]);
+  const mapNames = propMapper('name');
+
+  /**
+   * [displayName, propertyName, callback?]
+   */
+  const reference = [
+    ['ID', 'id'],
+    ['Padronizada?', 'short_description', sd => !!sd],
+    ['Título', 'title'],
+    ['Professor', 'instructor', i => i['name']],
+    ['Tópicos', 'topics', mapNames],
+    ['Publico Alvo', 'target_audiences', mapNames],
+    ['Palavras Chave', 'keywords'],
+    ['Jornadas', 'journeys', mapNames],
+    ['Produtos', 'products', mapNames],
+    ['Tipo', 'type'],
+    ['Descrição', 'short_description'],
+    ['Publicado?', 'published', p => !!p],
+    ['Status', 'status'],
+    ['Duração', 'total_time', toHHMMSS],
+    ['Vídeos?', 'videos', vs => vs.reduce((ac, c) => ac || !!c['uri'], false)],
+    ['Anexos', 'files', propMapper('url')],
     [
-      'ID',
-      'Título',
-      'Tópicos',
-      'Publico Alvo',
-      'Palavras Chave',
-      'Professor',
-      'Tipo',
-      'Status',
-      'Publicado',
-      'Curso',
-      'Duração',
-//      'Playlist',
-      'Jornada'
+      'Link',
+      'user_view',
+      uv =>
+        uv &&
+        `https://admin.simsave.com.br/minhas_aulas/${uv['content_id']}/video/${uv['content_video_id']}`
     ]
   ];
-  const interpretedData = interpretData(
-    responseMain,
-    responseDuration,
-    responseContent,
-    responseJourneys
-  );
+  const [header, headlessRef] = arraySplitter(reference);
+  const interpretedData = interpretData(data, headlessRef);
 
-  addToSpreadsheet(header, interpretedData);
+  addToSpreadsheet([header], interpretedData);
 }

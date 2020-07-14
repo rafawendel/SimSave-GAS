@@ -28,6 +28,6 @@ export function edit(subpage: string, newData: object[] | object): {
   errors: any[]
 };
 
-export function deleteAllEntries(subpage: string): Promise<any[]>
+export function deleteAllEntries_(subpage: string): Promise<any[]>
 
-export function deleteBetween(subpage: string, range: string[] | number[]): Promise<any[]>
+export function deleteBetween_(subpage: string, range: string[] | number[]): Promise<any[]>
