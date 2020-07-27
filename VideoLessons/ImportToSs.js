@@ -1,6 +1,6 @@
-/* global SimSave toHHMMSS addToSpreadsheet arraySplitter */
+/* global SimSave toHHMMSS addToSpreadsheet arraySplitter batchFetch */
 /// <reference path="./utils.js">
-function interpretData(contentList, reference) {
+function interpretData_(contentList, reference) {
   return contentList.map(content =>
     reference.map(ref => {
       const [prop, cb] = ref;
@@ -8,6 +8,20 @@ function interpretData(contentList, reference) {
       return Array.isArray(val) ? val.join(', ') : val;
     })
   );
+}
+
+async function mutateInstructorIdsIntoProducts_(dataMatrix, col) {
+  const { data: instructors } = await SimSave.get('user', { role: 'instructor' });
+  let instructorProducts = new Map();
+  instructors.forEach(instructor => {
+    if (!instructor || !instructor.products) return;
+    instructorProducts.set(instructor.id, instructor.products.map(p => p.name || '').join(','));
+  });
+
+  for (let i = 0; i <= dataMatrix.length; i++) {
+    if (!dataMatrix[i]) continue;
+    dataMatrix[i][col] = instructorProducts.get(dataMatrix[i][col]);
+  }
 }
 
 async function updateSpreadsheetFromSimSave() {
@@ -38,14 +52,19 @@ async function updateSpreadsheetFromSimSave() {
     ['Anexos', 'files', propMapper('url')],
     [
       'Link',
-      'user_view',
-      uv =>
-        uv &&
-        `https://admin.simsave.com.br/minhas_aulas/${uv['content_id']}/video/${uv['content_video_id']}`
-    ]
+      'title',
+      t => `https://admin.simsave.com.br/minhas_aulas?query=${t.replace(/\s/g, '%20')}`
+    ],
+    ['Imagem', 'image', i => i && i.replace('{size}/', '')],
+    ['Thumbnail?', 'image', i => /simsave/.test(i)],
+    ['Prod. Prof.', 'instructor', i => i['id']]
   ];
+
   const [header, headlessRef] = arraySplitter(reference);
-  const interpretedData = interpretData(data, headlessRef);
+  const interpretedData = interpretData_(data, headlessRef);
+
+  // Will mutate the ids into a list of product names
+  await mutateInstructorIdsIntoProducts_(interpretedData, header.indexOf('Prod. Prof.'));
 
   addToSpreadsheet([header], interpretedData);
 }

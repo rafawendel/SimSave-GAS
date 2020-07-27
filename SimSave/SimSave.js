@@ -15,8 +15,8 @@ function getParams_() {
   return params;
 }
 
-async function get(subpage, admin = true) {
-  const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, role: 'instructor' };
+async function get(subpage, qParams = {}, admin = true) {
+  const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, ...qParams };
   const params = getParams_();
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/${
     admin ? 'admin/' : ''
@@ -25,8 +25,8 @@ async function get(subpage, admin = true) {
   return await fetchUrl(sourceUrl, { ...params });
 }
 
-async function getAll(subpage, admin = true) {
-  const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, role: 'instructor' };
+async function getAll(subpage, qParams = {}, admin = true) {
+  const queryParams = { page: 1, pagesize: 99999, pageSize: 99999, ...qParams };
   const sourceUrl = `https://api-ssl.simsave.com.br/v1/${admin ? 'admin/' : ''}${subpage}`;
   const params = getParams_();
 
@@ -37,7 +37,7 @@ async function getAll(subpage, admin = true) {
     data.map(datum =>
       fetchUrl(`${sourceUrl}/${datum.id}`, params)
         .catch(err => networkErrors.push(err.error)) // avoids stopping the chain
-        .then(res => res)
+        .then(res => res.data)
     )
   );
 
